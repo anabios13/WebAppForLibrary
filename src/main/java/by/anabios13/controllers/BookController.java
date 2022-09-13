@@ -2,6 +2,7 @@ package by.anabios13.controllers;
 
 import by.anabios13.dao.BookDAO;
 import by.anabios13.models.Book;
+import by.anabios13.models.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,9 +26,10 @@ public class BookController {
         return "books/index";
     }
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") int bookId, Model model) {
+    public String show(@PathVariable("id") int bookId, Model model,@ModelAttribute("person") Person person) {
         model.addAttribute("book", bookDAO.show(bookId));
         model.addAttribute("bookOwner", bookDAO.checkAvailabilityForBook(bookId));
+        model.addAttribute("people",bookDAO.getPeopleNames());
         return "books/show";
     }
 
@@ -64,5 +66,16 @@ public class BookController {
     public String delete(@PathVariable("id") int bookId) {
         bookDAO.delete(bookId);
         return "redirect:/books";
+    }
+    @PatchMapping("/add/{id}")
+    public String chooseBookOwner(@ModelAttribute("person") Person person,@PathVariable("id") int bookId){
+        bookDAO.chooseOwner(person.getPersonId(), bookId);
+        return "redirect:/books/"+bookId;
+    }
+
+    @PatchMapping("/remove/{id}")
+    public String removeBookOwner(@PathVariable("id") int bookId){
+        bookDAO.removeOwner(bookId);
+        return "redirect:/books/"+bookId;
     }
 }

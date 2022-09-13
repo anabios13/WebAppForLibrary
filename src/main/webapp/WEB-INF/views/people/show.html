@@ -15,11 +15,14 @@
 </div>
 </p>
 <p th:if="${books.isEmpty}">This person has not books</p>
-
-
+<br/>
+<hr/>
 <a th:href="@{/people/{id}/edit(id=${person.getPersonId()})}">Edit</a>
 <form th:method="DELETE" th:action="@{/people/{id}(id=${person.getPersonId()})}">
     <input type="submit" value="Delete" />
+</form>
+<form  th:action="@{/people}">
+    <input type="submit" value="People"/>
 </form>
 </body>
 </html>

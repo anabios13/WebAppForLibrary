@@ -14,6 +14,7 @@ public class BookDAO {
     private final JdbcTemplate jdbcTemplate;
 
 
+
     public BookDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -35,6 +36,9 @@ public class BookDAO {
         //  в случае когда имеется несовпадение столбцов таблицы с полями класса(например, когда некоторые поля отутсвуют) необходимо реализовать собственный RowMapper
     }
 
+    public List<Person> getPeopleNames(){
+        return  jdbcTemplate.query("SELECT * FROM person", new BeanPropertyRowMapper<>(Person.class));
+    };
 
     public Object show(int bookId) {
         return jdbcTemplate.query("SELECT * FROM book WHERE book_id=?", new Object[]{bookId}, new BeanPropertyRowMapper<>(Book.class))
@@ -51,5 +55,13 @@ public class BookDAO {
 
     public void update(int bookId, Book updateBook) {
         jdbcTemplate.update("UPDATE book SET name_of_book=?, author=?,year_of_release=? WHERE book_id=?", updateBook.getNameOfBook(), updateBook.getAuthor(), updateBook.getYearOfRelease(), bookId);
+    }
+
+    public void chooseOwner(int personId,int bookId) {
+        jdbcTemplate.update("UPDATE book SET person_id=? WHERE book_id=?", personId,bookId);
+    }
+
+    public void removeOwner(int bookId) {
+        jdbcTemplate.update("UPDATE book SET person_id=null WHERE book_id=?",bookId);
     }
 }
